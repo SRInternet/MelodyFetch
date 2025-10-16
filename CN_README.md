@@ -1,7 +1,5 @@
 # <image src="favicon.ico" height="45"/> MelodyFetch - 无损音乐解析工具
-<img src="https://img.shields.io/static/v1?label=LICENSE&message=MIT&color=coral" alt="Badge">
-  <img src="https://img.shields.io/github/languages/top/SRInternet/melodyfetch.github.io" alt="Language">
-  <img src="https://img.shields.io/github/stars/SRInternet/melodyfetch.github.io" alt="Stars">
+<img src="https://img.shields.io/static/v1?label=LICENSE&message=MIT&color=coral" alt="Badge">    <img src="https://img.shields.io/github/languages/top/SRInternet/melodyfetch.github.io" alt="Language">    <img src="https://img.shields.io/github/stars/SRInternet/melodyfetch.github.io" alt="Stars">
 
 MelodyFetch 是一个音乐解析工具，提供音乐搜索和试听功能。
 
