@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MelodyFetch - 无损音乐解析工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 min-h-screen font-sans">
+    <!-- 背景装饰元素 -->
+    <div class="decorative-element top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-purple-400 blur-3xl opacity-20"></div>
+    <div class="decorative-element top-1/3 left-1/3 w-80 h-80 rounded-full bg-blue-400 blur-3xl opacity-20"></div>
+    <div class="decorative-element bottom-10 right-10 w-72 h-72 rounded-full bg-pink-400 blur-3xl opacity-20"></div>
+    <div class="decorative-element top-10 right-10 w-64 h-64 rounded-full bg-indigo-400 blur-3xl opacity-20"></div>
+    
+    <!-- 暗黑模式切换按钮 -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fa fa-moon-o" id="themeIcon"></i>
+    </div>
+    
+    <!-- 顶部通知框 (初始隐藏) -->
+    <div id="notification" class="fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg z-50 transform -translate-y-full transition-transform duration-300 flex items-center justify-center py-3 px-4">
+        <div class="notification-content flex items-center">
+            <i id="notificationIcon" class="fa fa-info-circle text-purple-500 mr-3"></i>
+            <span id="notificationMessage" class="text-gray-800 dark:text-gray-200"></span>
+        </div>
+    </div>
+
+    <!-- 主内容容器 -->
+    <div class="container mx-auto px-4 py-8 relative z-10">
+        <!-- 初始欢迎界面 -->
+        <div id="welcomeScreen" class="flex flex-col items-center justify-center min-h-[80vh] transition-all duration-1000 ease-in-out">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 tracking-tight animate-onload" style="animation-delay: 0.2s;">MelodyFetch</h1>
+            <p class="text-xl md:text-2xl text-gray-600 mb-10 animate-onload" style="animation-delay: 0.4s;">无损音乐解析工具</p>
+            <div class="w-full max-w-2xl animate-onload" style="animation-delay: 0.6s;">
+                <div id="searchContainer" class="relative">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="搜索歌曲名称或歌手..." 
+                        class="w-full py-4 px-6 pl-14 rounded-xl bg-white/80 backdrop-blur-md border border-purple-100 shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300"
+                    >
+                    <i class="fa fa-search absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg"></i>
+                    <button 
+                        id="searchButton" 
+                        class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+                    >
+                        搜索
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 搜索结果区域 (初始隐藏) -->
+        <div id="searchResultsArea" class="hidden transition-all duration-500 ease-in-out pt-8">
+            <!-- 返回按钮 -->
+            <div class="w-full max-w-3xl mx-auto mb-4">
+                <button id="backButton" class="flex items-center text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200">
+                    <i class="fa fa-arrow-left mr-2"></i>
+                    <span>返回首页</span>
+                </button>
+            </div>
+            <!-- 搜索框 (搜索时移到顶部) -->
+            <div id="floatingSearchContainer" class="w-full max-w-3xl mx-auto mb-8">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="floatingSearchInput" 
+                        placeholder="搜索歌曲名称或歌手..." 
+                        class="w-full py-3 px-6 pl-12 rounded-xl bg-white/90 backdrop-blur-md border border-purple-100 shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300"
+                    >
+                    <i class="fa fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg"></i>
+                    <button 
+                        id="floatingSearchButton" 
+                        class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-5 py-1.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+                    >
+                        搜索
+                    </button>
+                </div>
+            </div>
+
+            <!-- 进度条 (初始隐藏) -->
+            <div id="progressContainer" class="w-full max-w-3xl mx-auto mb-8 hidden">
+                <div class="bg-gray-200 rounded-full h-2.5">
+                    <div id="progressBar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-2.5 rounded-full animate-pulse"></div>
+                </div>
+            </div>
+
+            <!-- 结果列表 -->
+            <div id="resultsContainer" class="w-full max-w-3xl mx-auto grid grid-cols-1 gap-4">
+                <!-- 搜索结果将通过JavaScript动态添加 -->
+            </div>
+        </div>
+
+        <!-- 歌曲详情页面 (初始隐藏) -->
+        <div id="songDetailPage" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl mx-4 overflow-hidden transform transition-all duration-500 scale-95 opacity-0" id="detailCard">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">歌曲详情</h2>
+                        <button id="closeDetailButton" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 text-xl transition-colors duration-200">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- 封面区域 -->
+                        <div class="md:col-span-1">
+                            <div class="relative aspect-square rounded-xl overflow-hidden bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/50 dark:to-pink-900/50">
+                                <img id="songCover" src="" alt="歌曲封面" class="w-full h-full object-cover">
+                                <!-- 播放按钮覆盖层 -->
+                                <div class="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer" id="playPreview">
+                                    <div class="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+                                        <i class="fa fa-play text-purple-600 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 信息区域 -->
+                        <div class="md:col-span-2">
+                            <h3 id="detailSongName" class="text-2xl font-bold text-gray-800 dark:text-white mb-2"></h3>
+                            <p id="detailArtist" class="text-lg text-gray-600 dark:text-gray-300 mb-4"></p>
+                            <p id="detailAlbum" class="text-gray-500 dark:text-gray-400 mb-4"></p>
+                            <p id="detailDuration" class="text-gray-500 dark:text-gray-400 mb-6"></p>
+                            
+                            <!-- 操作按钮 -->
+                            <div class="flex flex-wrap gap-3">
+                                <button id="downloadButton" class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center">
+                                    <i class="fa fa-download mr-2"></i> 下载无损音乐
+                                </button>
+                                <button id="openInBrowserButton" class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-6 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center">
+                                    <i class="fa fa-external-link mr-2"></i> 在浏览器中打开
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    
+    <!-- 版权信息 -->
+    <footer class="w-full py-4 mt-10 text-center text-gray-500 dark:text-gray-400 text-sm">
+        <div class="container mx-auto">
+            <p>© 2025 SR思锐 开发者. 保留部分权利.</p>
+            <a href="https://github.com/SRInternet/melodyfetch.github.io/" target="_blank" rel="noopener">访问 Github 仓库</a>
+        </div>
+    </footer>
+</body>
+</html>

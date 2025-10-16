@@ -1,0 +1,344 @@
+/* 基础样式和动画 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 暗黑模式 */
+.dark body {
+    background: linear-gradient(to bottom right, #111827, #1f2937);
+    color: #f9fafb;
+}
+
+/* 暗黑模式下的文本样式 */
+.dark #welcomeScreen p {
+    color: #f9fafb;
+}
+
+/* 暗黑模式下的详情页样式 */
+.dark #detailCard {
+    background-color: #1f2937;
+    border: 1px solid #374151;
+}
+
+/* 暗黑模式下的通知框样式 */
+.dark #notification {
+    background-color: #1f2937 !important;
+    border: 1px solid #374151;
+}
+
+.dark #notificationMessage {
+    color: #f9fafb !important;
+}
+
+.dark #detailCard h2 {
+    color: #f9fafb;
+}
+
+.dark #detailCard h3 {
+    color: #f9fafb;
+}
+
+.dark #detailCard p {
+    color: #d1d5db;
+}
+
+.dark #detailCard #detailDuration,
+.dark #detailCard #detailAlbum {
+    color: #9ca3af;
+}
+
+.dark #detailCard .bg-gradient-to-br {
+    background-image: linear-gradient(to bottom right, rgba(139, 92, 246, 0.2), rgba(219, 39, 119, 0.2));
+}
+
+/* 暗黑模式下的进度条样式 */
+.dark #progressContainerWrapper .text-gray-500 {
+    color: #9ca3af !important;
+}
+
+.dark #progressContainerWrapper .bg-gray-200 {
+    background-color: #374151 !important;
+}
+
+.dark #progressContainerWrapper .bg-white {
+    background-color: #e5e7eb !important;
+}
+
+/* 背景网格 */
+.bg-grid {
+    background-image: 
+        linear-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139, 92, 246, 0.1) 1px, transparent 1px);
+    background-size: 25px 25px;
+}
+
+.dark .bg-grid {
+    background-image: 
+        linear-gradient(rgba(139, 92, 246, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139, 92, 246, 0.05) 1px, transparent 1px);
+}
+
+/* 装饰元素 */
+.decorative-element {
+    position: fixed;
+    opacity: 0.5;
+    z-index: 0;
+    transition: opacity 0.3s ease;
+}
+
+.dark .decorative-element {
+    opacity: 0.3;
+}
+
+/* 主题切换按钮 */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.dark .theme-toggle {
+    background: rgba(30, 30, 40, 0.8);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
+.theme-toggle i {
+    font-size: 1.25rem;
+    color: #4B5563;
+    transition: all 0.3s ease;
+}
+
+.dark .theme-toggle i {
+    color: #E5E7EB;
+}
+
+/* 进入动画 */
+.animate-onload {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 搜索结果项 */
+.song-item {
+    position: relative;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.dark .song-item {
+    background: rgba(30, 41, 59, 0.9);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.song-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dark .song-item:hover {
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+}
+
+.song-cover {
+    width: 64px;
+    height: 64px;
+    border-radius: 0.5rem;
+    object-fit: cover;
+}
+
+.song-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.song-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dark .song-name {
+    color: #f9fafb;
+}
+
+.song-artist {
+    font-size: 0.95rem;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dark .song-artist {
+    color: #9ca3af;
+}
+
+.song-duration {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    margin-left: 1rem;
+}
+
+/* 按钮样式 */
+.btn-primary {
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(139, 92, 246, 0.4);
+}
+
+.btn-secondary {
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    background-color: #f9fafb;
+}
+
+.dark .btn-secondary {
+    background-color: #374151;
+    border-color: #4B5563;
+    color: #E5E7EB;
+}
+
+.dark .btn-secondary:hover {
+    background-color: #4B5563;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 暗黑模式下的输入框样式 */
+.dark input {
+    background-color: rgba(30, 41, 59, 0.9) !important;
+    border-color: rgba(75, 85, 99, 0.5) !important;
+    color: #f9fafb !important;
+}
+
+.dark input::placeholder {
+    color: #9ca3af !important;
+}
+
+.dark input:focus {
+    border-color: #8B5CF6 !important;
+}
+
+/* 进度条动画 */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* 详情卡片动画 */
+.detail-card-enter {
+    transform: scale(1) !important;
+    opacity: 1 !important;
+}
+
+/* 搜索结果为空提示 */
+.no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6b7280;
+}
+
+.dark .no-results {
+    color: #9ca3af;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 3rem !important;
+    }
+    
+    .song-item {
+        padding: 1rem;
+        gap: 1rem;
+    }
+    
+    .song-cover {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .song-name {
+        font-size: 1rem;
+    }
+    
+    .song-artist {
+        font-size: 0.85rem;
+    }
+    
+    .detail-card {
+        margin: 1rem;
+    }
+    
+    /* 手机上的详情页封面优化 */
+    #detailCard .aspect-square {
+        max-height: 250px;
+        margin: 0 auto;
+    }
+    
+    .theme-toggle {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .theme-toggle i {
+        font-size: 1rem;
+    }
+}
