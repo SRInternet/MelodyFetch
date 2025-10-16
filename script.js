@@ -575,51 +575,147 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 下载音乐
+    // // 下载音乐
+    // function downloadMusic() {
+    //     if (!currentSong || !currentSong.url) {
+    //         showNotification('暂无下载资源', 'warning');
+    //         log('下载失败: currentSong或currentSong.url不存在');
+    //         return;
+    //     }
+        
+    //     // 检查URL有效性
+    //     try {
+    //         new URL(currentSong.url);
+    //     } catch (e) {
+    //         showNotification('下载链接无效', 'error');
+    //         log(`下载失败: 无效的URL - ${currentSong.url}`);
+    //         console.error('无效的URL:', currentSong.url);
+    //         return;
+    //     }
+        
+    //     log(`准备下载: ${currentSong.song} - ${currentSong.singer} (URL: ${currentSong.url})`);
+        
+    //     // 显示正在获取下载链接的提示
+    //     showNotification(`正在获取下载链接，请稍候...`, 'info');
+        
+    //     // 使用fetch来获取文件然后创建BlobURL
+    //     fetch(currentSong.url, {
+    //         mode: 'cors',
+    //         headers: {
+    //             'Accept': 'audio/*'
+    //         }
+    //     })
+    //         .then(response => {
+    //             if (!response.ok) {
+    //                 const errorMsg = `HTTP错误: ${response.status} ${response.statusText}`;
+    //                 log(`下载失败: ${errorMsg}`);
+    //                 console.error('下载失败:', errorMsg, response);
+    //                 throw new Error(errorMsg);
+    //             }
+    //             return response.blob();
+    //         })
+    //         .then(blob => {
+    //             // 创建Blob URL
+    //             const blobUrl = URL.createObjectURL(blob);
+    //             log('下载成功，创建Blob URL');
+                
+    //             // 创建下载链接
+    //             const downloadLink = document.createElement('a');
+    //             downloadLink.href = blobUrl;
+    //             downloadLink.download = `${currentSong.song} - ${currentSong.singer}.mp3`;
+                
+    //             // 触发下载
+    //             document.body.appendChild(downloadLink);
+    //             downloadLink.click();
+    //             document.body.removeChild(downloadLink);
+                
+    //             // 清理Blob URL
+    //             setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+                
+    //             // 下载成功提示
+    //             showNotification(`开始下载: ${currentSong.song} - ${currentSong.singer}`, 'success');
+    //         })
+    //         .catch(error => {
+    //             log(`下载失败: ${error.message}`);
+    //             console.error('下载失败:', error);
+    //             showNotification(`下载失败: ${error.message}\n请尝试"在浏览器中打开"后手动下载`, 'error');
+    //         });
+    // }
+
+    // 下载音乐 - 使用CORS代理
+    // function downloadMusic() {
+    //     if (!currentSong || !currentSong.url) {
+    //         showNotification('暂无下载资源', 'warning');
+    //         log('下载失败: currentSong或currentSong.url不存在');
+    //         return;
+    //     }
+
+    //     log(`准备下载: ${currentSong.song} - ${currentSong.singer} (URL: ${currentSong.url})`);
+    //     showNotification(`正在获取下载链接，请稍候...`, 'info');
+
+    //     // 使用CORS代理
+    //     const proxyUrl = 'https://crossorigin.me/'; // 公共CORS代理
+        
+    //     const targetUrl = currentSong.url;
+    //     const finalUrl = proxyUrl + targetUrl;
+
+    //     fetch(finalUrl, {
+    //         mode: 'cors',
+    //         headers: {
+    //             'Accept': 'audio/*',
+    //             'Origin': window.location.origin
+    //         }
+    //     })
+    //     .then(response => {
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP错误: ${response.status}`);
+    //         }
+    //         return response.blob();
+    //     })
+    //     .then(blob => {
+    //         const blobUrl = URL.createObjectURL(blob);
+    //         const downloadLink = document.createElement('a');
+    //         downloadLink.href = blobUrl;
+    //         downloadLink.download = `${currentSong.song} - ${currentSong.singer}.mp3`;
+            
+    //         document.body.appendChild(downloadLink);
+    //         downloadLink.click();
+    //         document.body.removeChild(downloadLink);
+            
+    //         setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+    //         showNotification(`开始下载: ${currentSong.song}`, 'success');
+    //     })
+    //     .catch(error => {
+    //         log(`下载失败: ${error.message}`);
+    //         console.error('下载失败:', error);
+            
+    //         // 备用方案：直接打开链接
+    //         showNotification(`下载失败，尝试直接打开链接...`, 'warning');
+    //         setTimeout(() => {
+    //             window.open(currentSong.url, '_blank');
+    //         }, 1000);
+    //     });
+    // }
+
+   // 最简单的解决方案 - 避免CORS问题
     function downloadMusic() {
         if (!currentSong || !currentSong.url) {
             showNotification('暂无下载资源', 'warning');
             return;
         }
+
+        // 直接创建下载链接，让浏览器处理
+        const link = document.createElement('a');
+        link.href = currentSong.url;
+        link.download = `${currentSong.song} - ${currentSong.singer}.mp3`;
+        link.target = '_blank';
         
-        log(`准备下载: ${currentSong.song} - ${currentSong.singer}`);
+        // 添加到DOM并触发点击
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
         
-        // 显示正在获取下载链接的提示
-        showNotification(`正在获取下载链接，请稍候...`, 'info');
-        
-        // 使用fetch来获取文件然后创建BlobURL
-        fetch(currentSong.url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP错误: ${response.status}`);
-                }
-                return response.blob();
-            })
-            .then(blob => {
-                // 创建Blob URL
-                const blobUrl = URL.createObjectURL(blob);
-                
-                // 创建下载链接
-                const downloadLink = document.createElement('a');
-                downloadLink.href = blobUrl;
-                downloadLink.download = `${currentSong.song} - ${currentSong.singer}.mp3`;
-                
-                // 触发下载
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
-                
-                // 清理Blob URL
-                setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
-                
-                // 下载成功提示
-                showNotification(`开始下载: ${currentSong.song} - ${currentSong.singer}`, 'success');
-            })
-            .catch(error => {
-                log(`下载失败: ${error.message}`);
-                console.error('下载失败:', error);
-                showNotification(`下载失败: ${error.message}\n请尝试"在浏览器中打开"后手动下载`, 'error');
-            });
+        showNotification('下载已开始，如未自动下载请右键另存为', 'info');
     }
     
     // 在浏览器中打开歌曲
