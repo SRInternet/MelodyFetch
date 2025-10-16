@@ -1,4 +1,4 @@
-# <image src="favicon.ico" height="45"/> MelodyFetch - Lossless Music Parser
+# <image src="favicon.ico" height="45"/> MelodyFetch - High-Quality Music Parser
 <img src="https://img.shields.io/static/v1?label=LICENSE&message=MIT&color=coral" alt="Badge">
   <img src="https://img.shields.io/github/languages/top/SRInternet/melodyfetch.github.io" alt="Language">
   <img src="https://img.shields.io/github/stars/SRInternet/melodyfetch.github.io" alt="Stars">
