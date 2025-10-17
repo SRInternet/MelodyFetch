@@ -585,7 +585,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 下载音乐
+    // 下载无损音乐
     function downloadMusic() {
         if (!currentSong || !currentSong.url) {
             showNotification('暂无下载资源', 'warning');
@@ -595,11 +595,18 @@ document.addEventListener('DOMContentLoaded', function() {
         log(`准备下载: ${currentSong.song} - ${currentSong.singer}`);
         
         // 显示正在获取下载链接的提示
-        showNotification(`正在获取下载链接，请稍候...`, 'info');
+        showNotification(`正在获取无损音乐下载链接，请稍候...`, 'info');
+        
+        // 转换HTTP URL为HTTPS以避免混合内容错误
+        let secureUrl = currentSong.url;
+        if (secureUrl.startsWith('http://')) {
+            secureUrl = secureUrl.replace('http://', 'https://');
+            log(`已将HTTP URL转换为HTTPS: ${secureUrl}`);
+        }
         
         // 使用fetch来获取文件然后创建BlobURL，添加mode和credentials选项处理CORS
         // 注意：Access-Control-Allow-Origin是服务器端响应头，不应该在客户端请求中设置
-        fetch(currentSong.url, {
+        fetch(secureUrl, {
             method: 'GET',
             mode: 'cors',
             credentials: 'omit'
@@ -614,10 +621,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 创建Blob URL
                 const blobUrl = URL.createObjectURL(blob);
                 
+                // 从URL或文件头检测文件格式（简单方式：检查URL扩展名）
+                let fileExtension = 'mp3';
+                if (currentSong.url.toLowerCase().includes('.flac')) {
+                    fileExtension = 'flac';
+                } else if (currentSong.url.toLowerCase().includes('.wav')) {
+                    fileExtension = 'wav';
+                } else if (currentSong.url.toLowerCase().includes('.ape')) {
+                    fileExtension = 'ape';
+                }
+                
                 // 创建下载链接
                 const downloadLink = document.createElement('a');
                 downloadLink.href = blobUrl;
-                downloadLink.download = `${currentSong.song} - ${currentSong.singer}.mp3`;
+                downloadLink.download = `${currentSong.song} - ${currentSong.singer}.${fileExtension}`;
                 
                 // 触发下载
                 document.body.appendChild(downloadLink);
@@ -636,8 +653,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // 尝试备选方案：直接在新标签页中打开音频链接
                 try {
-                    log(`尝试直接打开音频链接: ${currentSong.url}`);
-                    window.open(currentSong.url, '_blank');
+                    // 转换HTTP URL为HTTPS
+                    let secureAltUrl = currentSong.url;
+                    if (secureAltUrl.startsWith('http://')) {
+                        secureAltUrl = secureAltUrl.replace('http://', 'https://');
+                    }
+                    log(`尝试直接打开音频链接: ${secureAltUrl}`);
+                    window.open(secureAltUrl, '_blank');
                     showNotification(`正在尝试在新标签页中打开音频链接...`, 'info');
                 } catch (openError) {
                     console.error('无法在新标签页打开链接:', openError);
@@ -666,6 +688,85 @@ document.addEventListener('DOMContentLoaded', function() {
         // 可以在这里添加更多的日志处理逻辑，比如保存到本地存储等
     }
     
+    // 下载MP3音乐
+    function downloadMp3Music() {
+        if (!currentSong || !currentSong.url) {
+            showNotification('暂无下载资源', 'warning');
+            return;
+        }
+        
+        log(`准备下载MP3: ${currentSong.song} - ${currentSong.singer}`);
+        
+        // 显示正在获取下载链接的提示
+        showNotification(`正在获取MP3下载链接，请稍候...`, 'info');
+        
+        // 在URL中添加quality=4参数并转换HTTP为HTTPS
+        let mp3Url = currentSong.url;
+        if (mp3Url.includes('?')) {
+            mp3Url += '&quality=4';
+        } else {
+            mp3Url += '?quality=4';
+        }
+        
+        // 转换HTTP URL为HTTPS以避免混合内容错误
+        if (mp3Url.startsWith('http://')) {
+            mp3Url = mp3Url.replace('http://', 'https://');
+            log(`已将MP3 HTTP URL转换为HTTPS: ${mp3Url}`);
+        }
+        
+        // 使用fetch来获取文件然后创建BlobURL，添加mode和credentials选项处理CORS
+        fetch(mp3Url, {
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'omit'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP错误: ${response.status}`);
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                // 创建Blob URL
+                const blobUrl = URL.createObjectURL(blob);
+                
+                // 创建下载链接
+                const downloadLink = document.createElement('a');
+                downloadLink.href = blobUrl;
+                downloadLink.download = `${currentSong.song} - ${currentSong.singer}.mp3`;
+                
+                // 触发下载
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                
+                // 清理Blob URL
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+                
+                // 下载成功提示
+                showNotification(`开始下载MP3: ${currentSong.song} - ${currentSong.singer}`, 'success');
+            })
+            .catch(error => {
+                log(`MP3下载失败: ${error.message}`);
+                console.error('MP3下载失败:', error);
+                
+                // 尝试备选方案：直接在新标签页中打开音频链接（带quality=4参数）
+                try {
+                    // 确保URL是HTTPS
+                    let secureMp3Url = mp3Url;
+                    if (secureMp3Url.startsWith('http://')) {
+                        secureMp3Url = secureMp3Url.replace('http://', 'https://');
+                    }
+                    log(`尝试直接打开MP3音频链接: ${secureMp3Url}`);
+                    window.open(secureMp3Url, '_blank');
+                    showNotification(`正在尝试在新标签页中打开MP3音频链接...`, 'info');
+                } catch (openError) {
+                    console.error('无法在新标签页打开MP3链接:', openError);
+                    showNotification(`MP3下载失败: ${error.message}\n请尝试"在浏览器中打开"后手动下载`, 'error');
+                }
+            });
+    }
+    
     // 事件监听
     searchButton.addEventListener('click', () => searchMusic(searchInput.value));
     floatingSearchButton.addEventListener('click', () => searchMusic(floatingSearchInput.value));
@@ -677,6 +778,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     closeDetailButton.addEventListener('click', closeDetailPage);
     downloadButton.addEventListener('click', downloadMusic);
+    downloadMp3Button.addEventListener('click', downloadMp3Music);
     openInBrowserButton.addEventListener('click', openInBrowser);
     playPreview.addEventListener('click', togglePreview);
     // 返回按钮事件
