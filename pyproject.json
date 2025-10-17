@@ -1,0 +1,77 @@
+{
+ "version": "auto-py-to-exe-configuration_v1",
+ "pyinstallerOptions": [
+  {
+   "optionDest": "noconfirm",
+   "value": true
+  },
+  {
+   "optionDest": "filenames",
+   "value": "C:/Users/Administrator/Desktop/MelodyFetch/MelodyFetch_GUI.py"
+  },
+  {
+   "optionDest": "onefile",
+   "value": true
+  },
+  {
+   "optionDest": "console",
+   "value": false
+  },
+  {
+   "optionDest": "icon_file",
+   "value": "C:/Users/Administrator/Desktop/MelodyFetch/MelodyFetchIcon.ico"
+  },
+  {
+   "optionDest": "name",
+   "value": "MelodyFetch Music Downloader"
+  },
+  {
+   "optionDest": "clean_build",
+   "value": false
+  },
+  {
+   "optionDest": "strip",
+   "value": false
+  },
+  {
+   "optionDest": "noupx",
+   "value": false
+  },
+  {
+   "optionDest": "disable_windowed_traceback",
+   "value": false
+  },
+  {
+   "optionDest": "uac_admin",
+   "value": false
+  },
+  {
+   "optionDest": "uac_uiaccess",
+   "value": false
+  },
+  {
+   "optionDest": "argv_emulation",
+   "value": false
+  },
+  {
+   "optionDest": "bootloader_ignore_signals",
+   "value": false
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Administrator/Desktop/MelodyFetch/qss;qss/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Administrator/Desktop/MelodyFetch/MelodyFetchIcon.ico;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Administrator/Desktop/MelodyFetch/MelodyFetchIcon.png;."
+  }
+ ],
+ "nonPyinstallerOptions": {
+  "increaseRecursionLimit": true,
+  "manualArguments": ""
+ }
+}
